@@ -5,3 +5,4 @@ Upcoming projects:
 - [ ] QR Code Generator
 - [ ] Tic-Tac-Toe
 - [ ] Hangman
+- [ ] Rock Paper Scissors
