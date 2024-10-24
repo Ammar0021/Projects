@@ -46,3 +46,18 @@ def display_man(wrong_guesses):
 
 def hint(hint):
     
+def answer(answer):
+    pass
+
+def main():
+    answer = random.choice(words)
+    hint = ["_"] *len(answer)
+    wrong_guesses = 0
+    guessed_letters = set()
+    running = True
+    
+main()
+
+
+
+    
