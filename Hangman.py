@@ -65,12 +65,23 @@ def main():
     while running:
         display_man(wrong_guesses)
         display_hint(hint)
-        guess = input("Enter a letter: ").lower()
+        
+        try:
+            guess = input("Enter a letter: ").lower()
+            if len (guess) != 1 or not guess.isalpha():
+                raise ValueError("Invalid Input")
+        except ValueError as ve:
+            print(ve)
+        
 
+
+
+            
         if guess in answer:
             for i in range(len(answer)):
                 if answer[i] == guess:
-                    hint[i] = guess
+                        hint[i] = guess
+                    
                 
             
         
@@ -79,10 +90,3 @@ def main():
         
     
 main()
-
-
-
-
-
-
-    
