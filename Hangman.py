@@ -8,6 +8,7 @@
 #Count Controlled
 
 import random
+from time import sleep
 
 words = ("apple","orange","bannana","pineapple","mango")
 
@@ -42,12 +43,17 @@ hangman_art = {0:("  ",
 
 
 def display_man(wrong_guesses):
-    pass
-
-def hint(hint):
+    print("***********")
+    for line in hangman_art[wrong_guesses]:
+        print (line)
+    print("***********")
+        
+        
+def display_hint(hint):
+    print(" ".join(hint))
     
-def answer(answer):
-    pass
+def display_answer(answer):
+    print(" ".join(answer))
 
 def main():
     answer = random.choice(words)
@@ -55,8 +61,27 @@ def main():
     wrong_guesses = 0
     guessed_letters = set()
     running = True
+
+    while running:
+        display_man(wrong_guesses)
+        display_hint(hint)
+        guess = input("Enter a letter: ").lower()
+
+        if guess in answer:
+            for i in range(len(answer)):
+                if answer[i] == guess:
+                    hint[i] = guess
+                
+            
+        
+        
+        
+        
     
 main()
+
+
+
 
 
 
