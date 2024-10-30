@@ -95,8 +95,18 @@ def main():
                 print(f"Sorry, you've lost! The word was: {answer}")
                 running = False  # End the game since the player has lost
         
+        
+        
+        
+        
+        
+        
         sleep(1)  # Pause for a moment to improve user experience
 
-if __name__ == "__main__":
-    main()
 
+
+
+
+
+
+main()
