@@ -4,4 +4,3 @@ Upcoming projects:
 
 - [ ] QR Code Generator
 - [ ] Tic-Tac-Toe
-- [ ] Hangman
