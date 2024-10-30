@@ -1,7 +1,15 @@
 import random
 from time import sleep
 
-words = ("apple", "orange", "banana", "pineapple", "mango")
+words = (
+    "apple", "orange", "banana", "pineapple", "mango",
+    "grape", "strawberry", "blueberry", "kiwi", "peach",
+    "plum", "coconut", "papaya", "pear", "apricot",
+    "watermelon", "pomegranate", "blackberry", "raspberry", "lime",
+    "lemon", "cherry", "fig", "date", "guava",
+    "nectarine", "tangerine", "cranberry", "persimmon", "cantaloupe"
+)
+
 
 hangman_art = {
     0: ("  ",
