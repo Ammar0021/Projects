@@ -84,7 +84,7 @@ def main():
                     hint[i] = guess
             
             if "_" not in hint:
-                print("Congratulations! You've guessed the word: " + answer)
+                print(f"Congratulations! You've guessed the word: {answer}")
                 running = False  # End the game since the player has won
         else:
             wrong_guesses += 1
