@@ -2,5 +2,5 @@
 
 Upcoming projects:
 
-- [ ] Blackjack
-- [ ] QR Code Generator
+- [ ] Connect Four
+
