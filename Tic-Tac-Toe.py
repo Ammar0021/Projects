@@ -4,11 +4,14 @@
 #Create computer move
 #Check for tie
 #Check for win 
+#Ask user to continue
+#Score Tracking
+
 
 from random import randint
 from time import sleep
 import colorama
-from colorama import Fore
+from colorama import Fore, Style
 
 colorama.init()
 
@@ -19,18 +22,34 @@ board = ["-", "-", "-",
 current_player = "X"
 running = True
 
-def display_board():
-    print(Fore.CYAN + " " + board[0] + "   |   " + board[1] + "   |   " + board[2])
-    print(Fore.CYAN + "      -----------")
-    print(Fore.CYAN + " " + board[3] + "   |   " + board[4] + "   |   " + board[5])
-    print(Fore.CYAN + "      -----------")
-    print(Fore.CYAN + " " + board[6] + "   |   " + board[7] + "   |   " + board[8] + Fore.RESET)
+player_score = 0
+computer_score = 0
+player_wins = 0
+computer_wins = 0
+draws = 0
 
+def display_board():
+    print("\n" + Fore.CYAN + " " + board[0] + "   |   " + board[1] + "   |   " + board[2])
+    print(Fore.CYAN + "-------------------")  
+    print(Fore.CYAN + " " + board[3] + "   |   " + board[4] + "   |   " + board[5])
+    print(Fore.CYAN + "-------------------")  
+    print(Fore.CYAN + " " + board[6] + "   |   " + board[7] + "   |   " + board[8] + Fore.RESET + "\n") 
+
+
+def welcome_page():
+    print(Style.BRIGHT + Fore.WHITE + "Welcome to Tic-Tac-Toe!" + Fore.RESET)
+    print(Fore.GREEN + "Winning will give you 1 point." + Fore.RESET)
+    print(Fore.YELLOW + "If you tie, you get 0.5 points." + Fore.RESET)
+    print(Style.BRIGHT +Fore.RED + "If you lose, you get 0 points." + Fore.RESET) 
+
+
+welcome_page()
 def player_move():
     global current_player
     while True:
+        
         try:
-            player_input = int(input(Fore.MAGENTA + "Enter a number 1-9: " + Fore.RESET))  
+            player_input = int(input(Fore.MAGENTA + "Enter a number between 1-9: " + Fore.RESET))  
             if player_input < 1 or player_input > 9:
                 raise ValueError(Fore.RED + "Invalid number")
             if board[player_input - 1] != "-":
@@ -50,10 +69,11 @@ def computer_move():
         move = randint(0, 8)
         
     board[move] = "O"
-    print(Fore.BLUE + f"Computer chose position {move + 1}")
+    print(Fore.BLUE + f"Computer chose position {move + 1}" + Fore.RESET)
     sleep(1)
 
 def check_winner():
+    
     win_conditions = [(0,1,2), (3,4,5), (6,7,8),
                       (0,3,6), (1,4,7), (2,5,8),
                       (0,4,8), (2,4,6)]
@@ -75,6 +95,7 @@ def game_status():
         display_board()
         print(Fore.GREEN + f"{game_winner} wins!" + Fore.RESET)
         running = False
+        
         return True
     
     if check_draw():
@@ -82,24 +103,68 @@ def game_status():
         display_board()
         print(Fore.BLUE + "It's a draw!" + Fore.RESET)
         running = False
+        
         return True
     
     return False
 
-while running:
-    display_board()
-    player_move()
-    
-    if game_status():
-        break
-    
-    current_player = "O"
-    computer_move()
-    display_board()
-    
-    if game_status():
-        break
-    
-    current_player = "X"
+def reset_board():
+    global board, current_player
+    board = ["-", "-", "-", 
+            "-", "-", "-", 
+            "-", "-", "-"]
+
+current_player = "X"
+
+while True:
+    reset_board()
+    running = True
+
+
+    while running:
+        display_board()
+        player_move()
+
+        if game_status():
+            if check_winner() == "X":
+                player_score += 1
+                player_wins += 1
+
+
+            elif check_draw() == "X":
+                player_score += 0.5
+                draws += 1
+            break
+
+        current_player = "O"
+        computer_move()
+
+        if game_status():
+            if check_winner() == "O":
+                computer_score += 1
+                computer_wins += 1
+
+            elif check_draw() == "O":
+                computer_score += 0.5
+                draws += 1
+            break
+
+        current_player = "X"
+        
+    def print_scores(player_score, computer_score, player_wins, computer_wins, draws):
+        print(f"Player Score: {Fore.CYAN}{player_score}{Fore.RESET} | "
+              f"Player Wins: {Fore.GREEN}{player_wins}{Fore.RESET} | "
+              f"Player Losses: {Fore.RED}{computer_wins}{Fore.RESET} | "
+              f"Player Draws: {Fore.YELLOW}{draws}{Fore.RESET} | ")
+
+
+        print(f"Computer Score: {Fore.CYAN}{computer_score}{Fore.RESET} | "
+              f"Computer Wins: {Fore.GREEN}{computer_wins}{Fore.RESET} | "
+              f"Computer Losses: {Fore.RED}{player_wins}{Fore.RESET} | "
+              f"Computer Draws: {Fore.YELLOW}{draws}{Fore.RESET}")
+
+        play_again = input(Fore.WHITE + "Do you want to play again? (yes/no): " + Fore.RESET).lower()
+        if play_again != "yes":
+            break
 
 
