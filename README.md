@@ -2,5 +2,5 @@
 
 Upcoming projects:
 
+- [ ] Blackjack
 - [ ] QR Code Generator
-- [ ] Tic-Tac-Toe
