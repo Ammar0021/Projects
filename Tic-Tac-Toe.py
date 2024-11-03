@@ -37,7 +37,7 @@ def display_board():
 
 
 def welcome_page():
-    print(Style.BRIGHT + Fore.WHITE + "Welcome to Tic-Tac-Toe!" + Fore.RESET)
+    print(Style.BRIGHT + Fore.WHITE + "Welcome to Tic-Tac-Toe!" + Fore.RESET + "\n")
     print(Fore.GREEN + "Winning will give you 1 point." + Fore.RESET)
     print(Fore.YELLOW + "If you tie, you get 0.5 points." + Fore.RESET)
     print(Style.BRIGHT +Fore.RED + "If you lose, you get 0 points." + Fore.RESET) 
@@ -93,7 +93,7 @@ def game_status():
     if game_winner:
         sleep(0.5)
         display_board()
-        print(Fore.GREEN + f"{game_winner} wins!" + Fore.RESET)
+        print(Fore.GREEN + f"{game_winner} wins!" + Fore.RESET + "\n")
         running = False
         
         return True
@@ -101,7 +101,7 @@ def game_status():
     if check_draw():
         sleep(0.5)
         display_board()
-        print(Fore.BLUE + "It's a draw!" + Fore.RESET)
+        print(Fore.BLUE + "It's a draw!" + Fore.RESET + "\n")
         running = False
         
         return True
@@ -115,6 +115,19 @@ def reset_board():
             "-", "-", "-"]
 
 current_player = "X"
+
+def print_scores(player_score, computer_score, player_wins, computer_wins, draws):
+    print(f"{Fore.CYAN}Player Score: {player_score}{Fore.RESET} | "
+          f"{Fore.GREEN}Player Wins: {player_wins}{Fore.RESET} | "
+          f"{Fore.RED}Player Losses: {computer_wins}{Fore.RESET} | "
+          f"{Fore.YELLOW}Player Draws: {draws}{Fore.RESET} | \n")
+
+    print(f"{Fore.CYAN}Computer Score: {computer_score}{Fore.RESET} | "
+          f"{Fore.GREEN}Computer Wins: {computer_wins}{Fore.RESET} | "
+          f"{Fore.RED}Computer Losses: {player_wins}{Fore.RESET} | "
+          f"{Fore.YELLOW}Computer Draws: {draws}{Fore.RESET}")
+
+
 
 while True:
     reset_board()
@@ -151,20 +164,25 @@ while True:
 
         current_player = "X"
         
-    def print_scores(player_score, computer_score, player_wins, computer_wins, draws):
-        print(f"Player Score: {Fore.CYAN}{player_score}{Fore.RESET} | "
-              f"Player Wins: {Fore.GREEN}{player_wins}{Fore.RESET} | "
-              f"Player Losses: {Fore.RED}{computer_wins}{Fore.RESET} | "
-              f"Player Draws: {Fore.YELLOW}{draws}{Fore.RESET} | ")
 
-
-        print(f"Computer Score: {Fore.CYAN}{computer_score}{Fore.RESET} | "
-              f"Computer Wins: {Fore.GREEN}{computer_wins}{Fore.RESET} | "
-              f"Computer Losses: {Fore.RED}{player_wins}{Fore.RESET} | "
-              f"Computer Draws: {Fore.YELLOW}{draws}{Fore.RESET}")
-
-        play_again = input(Fore.WHITE + "Do you want to play again? (yes/no): " + Fore.RESET).lower()
-        if play_again != "yes":
-            break
-
-
+    print_scores(player_score, computer_score, player_wins, computer_wins, draws)
+    print()
+    
+    while True:
+        try:
+            play_again = input(Fore.MAGENTA + "Do you want to play again? (yes/no): " + Fore.RESET).lower()
+            if play_again == "no":
+                print(Fore.YELLOW + "Thank you for playing!" + Fore.RESET)
+                sleep(1)
+                exit()
+            
+            elif play_again == "yes":
+                print("Starting a new game...")
+                sleep(2)
+                break
+                
+            else:
+                raise ValueError(Fore.RED + "Invalid input. Please enter 'yes' or 'no'." + Fore.RESET)    
+        except ValueError as e:
+            print(e)
+            
