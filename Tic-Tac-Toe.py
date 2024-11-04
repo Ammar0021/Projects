@@ -42,8 +42,11 @@ def display_board():
 def welcome_page():
     
     print(Style.BRIGHT + Fore.WHITE + "Welcome to Tic-Tac-Toe!" + Fore.RESET + "\n") #Added extra new line
+    sleep(1)
     print(Fore.GREEN + "Winning will give you 1 point." + Fore.RESET)
+    sleep(0.35)
     print(Fore.YELLOW + "If you tie, you get 0.5 points." + Fore.RESET)
+    sleep(0.35)
     print(Style.BRIGHT +Fore.RED + "If you lose, you get 0 points." + Fore.RESET) 
 
 
@@ -54,6 +57,7 @@ def player_move():
     while True: #Loop until valid input is provided
         
         try:
+            sleep(1.5)
             player_input = int(input(Fore.MAGENTA + "Enter a number between 1-9: " + Fore.RESET))  
             if player_input < 1 or player_input > 9:   
                 raise ValueError(Fore.RED + "Invalid number")
@@ -148,6 +152,7 @@ while True:
 
 
     while running:
+        sleep(1.5)
         display_board()
         player_move()
 
@@ -200,3 +205,4 @@ while True:
                 raise ValueError(Fore.RED + "Invalid input. Please enter 'yes' or 'no'." + Fore.RESET)    
         except ValueError as e:
             print(e)
+            
