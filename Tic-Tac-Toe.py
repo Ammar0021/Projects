@@ -96,8 +96,10 @@ def check_winner():
     return None #Returns None if no winner
 
 def check_draw():
-    return "-" not in board #Returns True if all positions are filled
-
+         if "-" not in board:
+             return True
+         return False
+         
 def game_status():
     
     global running
