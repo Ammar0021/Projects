@@ -41,7 +41,7 @@ def display_board():
 
 def welcome_page():
     
-    print(Style.BRIGHT + Fore.WHITE + "Welcome to Tic-Tac-Toe!" + Fore.RESET + "\n") #Added extra new line
+    print(Style.BRIGHT + '\033[4m' + Fore.WHITE + "Welcome to Tic-Tac-Toe!" + '\033[24m' + Fore.RESET + "\n") #'\033[4m' adds the underline, '\033[24m' resets it
     sleep(1)
     print(Fore.GREEN + "Winning will give you 1 point." + Fore.RESET)
     sleep(0.35)
