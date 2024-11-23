@@ -20,6 +20,7 @@ colorama.init()
 
 def clear_screen():  # This is to make clear_screen() work on all Operating Systems
     
+
     if sys.platform == 'darwin' or sys.platform == 'linux':  # MacOS or Linux
         os.system('clear')  # Removes any previous clutter in console
     elif sys.platform == 'win32':  # Windows
@@ -51,7 +52,7 @@ def game_mode():
             else:
                 raise ValueError("Invalid choice! Please enter 1 or 2 only.") 
         except ValueError as error:
-            print (error)             
+            print(error)             
     
 def initialise_board():
     return [[' ' for i in range(7)] for i in range(6)]
@@ -59,14 +60,17 @@ def initialise_board():
 
 def display_board(board):
     clear_screen()
-    
+
+#def player_move():
+
+
     for row in board:
         print(Fore.CYAN + "| " + " | ".join(row) + " |")
         print(Fore.GREEN + "------------------------------" + Fore.RESET)
 
 def winning_conditions():
-    win_conditions[]
-    
+    win_conditions = []
+
     # Horizonal Conditions
     for row in range(6):
         for col in range(4):
@@ -75,32 +79,32 @@ def winning_conditions():
     # Vertical Conditions
     for row in range(3):
         for col in range(7):
-            win_conditions.append([(row, col), (row +1, col)(row +2, col)(row +3, col)])
+            win_conditions.append([(row, col), (row +1, col), (row +2, col), (row +3, col)])
     
-    # Diagonal Conditions (Down Right)
+    # Diagonal Conditions (Up Right)(Bottom Right to Top Left)
     for row in range(3):
         for col in range(4):
             win_conditions.append([(row, col), (row + 1, col +1), (row +2, col +2), (row +3, col +3)])
     
-    # Diagonal Conditions (Down Left)
+    # Diagonal Conditions (Up Left)(Bottom Left to Top Right)
     for row in range(3):
         for col in range(3, 7):
-            win_conditions.append([(row, col), (row + 1, col -1,) (row +2, col -2,), (row + 3, col -3)])
+            win_conditions.append([(row, col), (row + 1, col -1), (row +2, col -2), (row + 3, col -3)])
 
     return win_conditions        
             
-def check_win():
+def check_win(board, win_conditions, player):
     for condition in win_conditions:
-        for row, col in condition:
-            if board[row][col]!= player:
-                return False
-        return True        
+        if all(board[row][col] == player for row, col in condition):
+            return True  
+    return False  
     
 def main():        
     welcome_screen()        
     board = initialise_board()
     display_board(board)
     mode = game_mode()
+    win_conditions = winning_conditions()
 
 if __name__ == "__main__":
     main()
