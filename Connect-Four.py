@@ -16,11 +16,14 @@ from colorama import Fore, Style
 from collections import deque, defaultdict
 
 
-colorama.init()
+colorama.init(autoreset=True)
+
+RED_DISC = '🔴'
+YELLOW_DISC = '🟡'
+
 
 def clear_screen():  # This is to make clear_screen() work on all Operating Systems
     
-
     if sys.platform == 'darwin' or sys.platform == 'linux':  # MacOS or Linux
         os.system('clear')  # Removes any previous clutter in console
     elif sys.platform == 'win32':  # Windows
@@ -28,7 +31,7 @@ def clear_screen():  # This is to make clear_screen() work on all Operating Syst
 
 def welcome_screen():
     clear_screen()
-    print(Fore.YELLOW + Style.BRIGHT + "Welcome to Connect Four!" + Fore.RESET)
+    print(Fore.YELLOW + Style.BRIGHT + "Welcome to Connect Four!")
     sleep(0.75)
     
 def game_mode():
@@ -42,12 +45,12 @@ def game_mode():
             if choice == "1":
                 print("Starting Single Player Mode!")
                 sleep(0.7)
-                return "single" # Stores "single"in "mode"
+                return "single"  # Stores "single" in "mode"
             
             elif choice == "2":
                 print("Starting Two Player Mode!") 
                 sleep(0.7)
-                return "multi" # Stores "multi"in "mode"
+                return "multi"  # Stores "multi" in "mode"
              
             else:
                 raise ValueError("Invalid choice! Please enter 1 or 2 only.") 
@@ -55,23 +58,20 @@ def game_mode():
             print(error)             
     
 def initialise_board():
-    return [[' ' for i in range(7)] for i in range(6)]
+    return [deque([' '] * 6) for i in range(7)]
 
 
 def display_board(board):
     clear_screen()
 
-#def player_move():
-
-
-    for row in board:
-        print(Fore.CYAN + "| " + " | ".join(row) + " |")
+    for row in range(6):  
+        print(Fore.CYAN + "| " + " | ".join(board[col][row] for col in range(7)) + " |")
         print(Fore.GREEN + "------------------------------" + Fore.RESET)
 
 def winning_conditions():
     win_conditions = []
 
-    # Horizonal Conditions
+    # Horizontal Conditions
     for row in range(6):
         for col in range(4):
             win_conditions.append([(row, col), (row, col +1), (row, col +2), (row, col +3)])
@@ -95,20 +95,183 @@ def winning_conditions():
             
 def check_win(board, win_conditions, player):
     for condition in win_conditions:
-        if all(board[row][col] == player for row, col in condition):
+        if all(board[col][row] == player for row, col in condition):
             return True  
     return False  
+
+def player_move(board, player):
+    while True:
+        try:
+            col = int(input("Choose a Column (1-7): ")) - 1  # -1 to ensure better user experience
+            if col < 0 or col > 6:
+                raise ValueError("Invalid Choice!, Please choose between 1 and 7, only")
+
+            if board[col][0] != ' ':
+                raise ValueError("Column is full, Please choose another column")
+            
+            for row in reversed(range(6)):
+                if board[col][row] == ' ':
+                    board[col][row] = player
+                    return
+                
+        except ValueError as error:
+            print (error)
+
+def computer_move(board, computer):
+    while True:
+        col = randint(0, 6)
+        if board[col][0] == ' ':
+            for row in reversed(range(6)):
+                if board[col][row] == ' ':
+                    board[col][row] = computer
+                    print("Computer is thinking...")
+                    sleep(0.5)
+                    print(f"Computer placed disc in column {col + 1}")
+                    return
+
+
+def disc_colour(mode):
+    if mode == "multi":
+        while True:
+            try:
+                print("Choose Your Disc Colour! :")
+                print("1. Red (🔴)")
+                print("2. Yellow (🟡)")
+                disc_colour = int(input("Enter 1 or 2: "))
+                
+                if disc_colour == 1:
+                    player1 = RED_DISC
+                    player2 = YELLOW_DISC
+                    break
+                
+                elif disc_colour == 2:
+                    player1 = YELLOW_DISC
+                    player2 = RED_DISC
+                    break
+                
+                else:
+                    raise ValueError("Invalid Choice, Please Choose 1 or 2 Only")
+            except ValueError as error:
+                print(error)
+        return player1, player2
+                
+    elif mode == "single":
+        while True:
+            try:
+                print("Choose Your Disc Colour! :")
+                print("1. Red (🔴)")
+                print("2. Yellow (🟡)")
+                disc_colour = int(input("Enter 1 or 2: "))
+                
+                if disc_colour == 1:
+                    player = RED_DISC
+                    computer = YELLOW_DISC
+                    break
+                
+                elif disc_colour == 2:
+                    player = YELLOW_DISC
+                    computer = RED_DISC
+                    break
+                
+                else:
+                    raise ValueError("Invalid Choice, Please Choose 1 or 2 Only")
+            except ValueError as error:
+                print(error)
+        return player, computer
+
+def game_loop(board, win_conditions, mode):     #This is the heart of the code
+    if mode == "multi":
+        player1, player2 = disc_colour(mode)
+        current_player = player1
+           
+    elif mode == "single":
+        player, computer = disc_colour(mode)
+        current_player = player
+        
+        
+    moves_counter = defaultdict(int)
     
+    while moves_counter['total'] < 42: 
+        display_board(board)
+        
+        if mode == "multi":
+            if current_player == player1:
+                print(Fore.RED + "(🔴) It's Player 1's turn!" if player1 == RED_DISC else Fore.YELLOW + "(🟡) It's Player 1's turn!")
+                player_move(board, player1)
+            elif current_player == player2:
+                print(Fore.RED + "(🔴) It's Player 2's turn!" if player2 == RED_DISC else Fore.YELLOW + "(🟡) It's Player 2's turn!") 
+                player_move(board, player2)  
+        
+        elif mode == "single":
+            if current_player == player:
+                print(Fore.RED + "(🔴) It's Your turn!" if player == RED_DISC else Fore.YELLOW + "(🟡) It's Your turn!")
+                player_move(board, player)
+            elif current_player == computer:
+                print("Computer's turn...")
+                computer_move(board, computer)
+                
+        moves_counter['total'] += 1
+                
+        if check_win(board, win_conditions, current_player):
+            display_board(board)  # Displays the final board
+            if current_player == player1:
+                winner = "Player 1"
+            elif current_player == player2:
+                winner = "Player 2"
+            elif current_player == player:
+                winner = "You"
+            elif current_player == computer:
+                winner = "Computer"
+                
+            if winner == "You":
+                print(Fore.LIGHTGREEN_EX + f"{winner} wins!")  # Grammar handling
+            else:
+                print(Fore.LIGHTGREEN_EX + f"{winner} wins!")
+            break
+            
+        if mode == "multi":
+           if current_player == player1:
+               current_player = player2
+           elif current_player == player2:
+               current_player = player1
+            
+        elif mode == "single":
+            if current_player == player:
+                current_player = computer
+            elif current_player == computer:
+                current_player = player
+                
+    if moves_counter['total'] == 42 and not check_win(board, win_conditions, current_player):
+        display_board(board)
+        print(Fore.LIGHTCYAN_EX + "It's a Draw!")
+    
+# Ask if the player wants to play again
+    while True:
+        try:
+            play_again = input("Do you want to play again? (yes/no): ").lower()
+            if play_again == "yes":
+                main()  # Restart the game
+            elif play_again == "no":
+                print("Thanks for playing!")
+                sys.exit()  # Exit the game
+            else:
+                raise ValueError("Invalid input! Please enter 'yes' or 'no' only.")
+        except ValueError as error:
+            print(error)
+
+
 def main():        
     welcome_screen()        
     board = initialise_board()
     display_board(board)
     mode = game_mode()
     win_conditions = winning_conditions()
-
+    game_loop(board, win_conditions, mode)
+ 
+ 
+    
 if __name__ == "__main__":
     main()
-
 
 
 
