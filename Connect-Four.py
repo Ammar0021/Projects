@@ -37,19 +37,26 @@ def welcome_screen():
 def game_mode():
     while True:
         try:
-            print(Fore.CYAN + "Choose Your Game Mode!" + Fore.RESET)
-            print("1. Single Player (Vs Computer)")
-            print("2. Two Player Mode")
-            choice = input("Enter 1 or 2: ")
+            sleep(0.4)
+            print(Fore.CYAN + "Choose Your Game Mode!\n")
+            sleep(0.8)
+            print(Fore.LIGHTYELLOW_EX + "1. Single Player (Vs Computer)")
+            sleep(0.4)
+            print(Fore.LIGHTMAGENTA_EX + "2. Two Player Mode\n")
+            sleep(1)
+            choice = input(Fore.LIGHTWHITE_EX + "Enter 1 or 2: ")
+            print()
             
             if choice == "1":
-                print("Starting Single Player Mode!")
+                print(Fore.LIGHTYELLOW_EX + "Starting Single Player Mode!")
                 sleep(0.7)
+                print()
                 return "single"  # Stores "single" in "mode"
             
             elif choice == "2":
-                print("Starting Two Player Mode!") 
+                print(Fore.LIGHTMAGENTA_EX + "Starting Two Player Mode!") 
                 sleep(0.7)
+                print()
                 return "multi"  # Stores "multi" in "mode"
              
             else:
@@ -60,13 +67,13 @@ def game_mode():
 def initialise_board():
     return [deque([' '] * 6) for i in range(7)]
 
-
 def display_board(board):
     clear_screen()
 
     for row in range(6):  
         print(Fore.CYAN + "| " + " | ".join(board[col][row] for col in range(7)) + " |")
         print(Fore.GREEN + "------------------------------" + Fore.RESET)
+
 
 def winning_conditions():
     win_conditions = []
@@ -134,9 +141,9 @@ def disc_colour(mode):
     if mode == "multi":
         while True:
             try:
-                print("Choose Your Disc Colour! :")
-                print("1. Red (🔴)")
-                print("2. Yellow (🟡)")
+                print(Fore.LIGHTYELLOW_EX + "Choose Your " + Fore.LIGHTRED_EX + "Disc Colour!\n")
+                print(Fore.RED + "1. Red (🔴)")
+                print(Fore.YELLOW + "2. Yellow (🟡)\n")
                 disc_colour = int(input("Enter 1 or 2: "))
                 
                 if disc_colour == 1:
@@ -158,9 +165,9 @@ def disc_colour(mode):
     elif mode == "single":
         while True:
             try:
-                print("Choose Your Disc Colour! :")
-                print("1. Red (🔴)")
-                print("2. Yellow (🟡)")
+                print(Fore.LIGHTYELLOW_EX + "Choose Your " + Fore.LIGHTRED_EX + "Disc Colour!\n")
+                print(Fore.RED + "1. Red (🔴)")
+                print(Fore.YELLOW + "2. Yellow (🟡)\n")
                 disc_colour = int(input("Enter 1 or 2: "))
                 
                 if disc_colour == 1:
@@ -196,18 +203,28 @@ def game_loop(board, win_conditions, mode):     #This is the heart of the code
         
         if mode == "multi":
             if current_player == player1:
+                sleep(0.3)
                 print(Fore.RED + "(🔴) It's Player 1's turn!" if player1 == RED_DISC else Fore.YELLOW + "(🟡) It's Player 1's turn!")
+                sleep(0.5)
                 player_move(board, player1)
+                
             elif current_player == player2:
+                sleep(0.3)
                 print(Fore.RED + "(🔴) It's Player 2's turn!" if player2 == RED_DISC else Fore.YELLOW + "(🟡) It's Player 2's turn!") 
+                sleep(0.5)
                 player_move(board, player2)  
         
         elif mode == "single":
             if current_player == player:
+                sleep(0.3)
                 print(Fore.RED + "(🔴) It's Your turn!" if player == RED_DISC else Fore.YELLOW + "(🟡) It's Your turn!")
+                sleep(0.5)
                 player_move(board, player)
+                
             elif current_player == computer:
+                sleep(0.3)
                 print("Computer's turn...")
+                sleep(0.5)
                 computer_move(board, computer)
                 
         moves_counter['total'] += 1
@@ -272,7 +289,6 @@ def main():
     
 if __name__ == "__main__":
     main()
-
 
 
 
