@@ -46,6 +46,7 @@ def game_mode():
             sleep(1)
             choice = input(Fore.LIGHTWHITE_EX + "Enter 1 or 2: ")
             print()
+            clear_screen()
             
             if choice == "1":
                 print(Fore.LIGHTYELLOW_EX + "Starting Single Player Mode!")
@@ -60,7 +61,7 @@ def game_mode():
                 return "multi"  # Stores "multi" in "mode"
              
             else:
-                raise ValueError("Invalid choice! Please enter 1 or 2 only.") 
+                raise ValueError(Fore.LIGHTRED_EX + "Invalid choice! Please enter 1 or 2 only.") 
         except ValueError as error:
             print(error)             
     
@@ -109,12 +110,14 @@ def check_win(board, win_conditions, player):
 def player_move(board, player):
     while True:
         try:
-            col = int(input("Choose a Column (1-7): ")) - 1  # -1 to ensure better user experience
+            print()
+            sleep(0.3)
+            col = int(input(Fore.LIGHTBLUE_EX + "Choose a Column (1-7): ")) - 1  # -1 to ensure better user experience
             if col < 0 or col > 6:
-                raise ValueError("Invalid Choice!, Please choose between 1 and 7, only")
+                raise ValueError(Fore.LIGHTRED_EX + "Invalid Choice!, Please choose between 1 and 7, only")
 
             if board[col][0] != ' ':
-                raise ValueError("Column is full, Please choose another column")
+                raise ValueError(Fore.LIGHTRED_EX + "Column is full, Please choose another column")
             
             for row in reversed(range(6)):
                 if board[col][row] == ' ':
@@ -141,6 +144,7 @@ def disc_colour(mode):
     if mode == "multi":
         while True:
             try:
+                clear_screen()
                 print(Fore.LIGHTYELLOW_EX + "Choose Your " + Fore.LIGHTRED_EX + "Disc Colour!\n")
                 print(Fore.RED + "1. Red (🔴)")
                 print(Fore.YELLOW + "2. Yellow (🟡)\n")
@@ -149,15 +153,17 @@ def disc_colour(mode):
                 if disc_colour == 1:
                     player1 = RED_DISC
                     player2 = YELLOW_DISC
+                    sleep(0.5)
                     break
                 
                 elif disc_colour == 2:
                     player1 = YELLOW_DISC
                     player2 = RED_DISC
+                    sleep(0.5)
                     break
                 
                 else:
-                    raise ValueError("Invalid Choice, Please Choose 1 or 2 Only")
+                    raise ValueError(Fore.LIGHTRED_EX + "Invalid Choice, Please Choose 1 or 2 Only")
             except ValueError as error:
                 print(error)
         return player1, player2
@@ -181,7 +187,7 @@ def disc_colour(mode):
                     break
                 
                 else:
-                    raise ValueError("Invalid Choice, Please Choose 1 or 2 Only")
+                    raise ValueError(Fore.LIGHTRED_EX + "Invalid Choice, Please Choose 1 or 2 Only")
             except ValueError as error:
                 print(error)
         return player, computer
@@ -272,7 +278,7 @@ def game_loop(board, win_conditions, mode):     #This is the heart of the code
                 print("Thanks for playing!")
                 sys.exit()  # Exit the game
             else:
-                raise ValueError("Invalid input! Please enter 'yes' or 'no' only.")
+                raise ValueError(Fore.LIGHTRED_EX + "Invalid input! Please enter 'yes' or 'no' only.")
         except ValueError as error:
             print(error)
 
