@@ -6,10 +6,16 @@
 #Placing a piece
 #winning conditions
 #Game loop
+#winning line
+
+#Issues:
+#Board Stability
+#Random colour reset
 
 import colorama
 import os
 import sys
+import random
 from random import randint
 from time import sleep
 from colorama import Fore, Style
@@ -17,6 +23,8 @@ from collections import deque, defaultdict
 
 
 colorama.init(autoreset=True)
+colours = [Fore.BLUE, Fore.LIGHTBLUE_EX, Fore.CYAN, Fore.LIGHTCYAN_EX, Fore.MAGENTA, Fore.LIGHTMAGENTA_EX,Fore.LIGHTYELLOW_EX, Fore.YELLOW]
+random_colour = random.choice(colours)
 
 RED_DISC = '🔴'
 YELLOW_DISC = '🟡'
@@ -112,7 +120,7 @@ def player_move(board, player):
         try:
             print()
             sleep(0.3)
-            col = int(input(Fore.LIGHTBLUE_EX + "Choose a Column (1-7): ")) - 1  # -1 to ensure better user experience
+            col = int(input(random_colour + "Choose a Column (1-7): " + Style.RESET_ALL)) - 1  # -1 to ensure better user experience
             if col < 0 or col > 6:
                 raise ValueError(Fore.LIGHTRED_EX + "Invalid Choice!, Please choose between 1 and 7, only")
 
@@ -247,7 +255,7 @@ def game_loop(board, win_conditions, mode):     #This is the heart of the code
                 winner = "Computer"
                 
             if winner == "You":
-                print(Fore.LIGHTGREEN_EX + f"{winner} wins!")  # Grammar handling
+                print(Fore.LIGHTGREEN_EX + f"{winner} win!")  # Grammar handling
             else:
                 print(Fore.LIGHTGREEN_EX + f"{winner} wins!")
             break
@@ -297,6 +305,8 @@ if __name__ == "__main__":
     main()
 
 
+        
+    
 
 
 
