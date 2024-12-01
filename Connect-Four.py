@@ -26,8 +26,8 @@ colorama.init(autoreset=True)
 colours = [Fore.BLUE, Fore.LIGHTBLUE_EX, Fore.CYAN, Fore.LIGHTCYAN_EX, Fore.MAGENTA, Fore.LIGHTMAGENTA_EX,Fore.LIGHTYELLOW_EX, Fore.YELLOW]
 random_colour = random.choice(colours)
 
-RED_DISC = '🔴'
-YELLOW_DISC = '🟡'
+RED_DISC = Fore.RED + "O"
+YELLOW_DISC = Fore.YELLOW + "O"
 
 # this is for compatibility
 def clear_screen():  
@@ -144,8 +144,10 @@ def computer_move(board, computer):
                 if board[col][row] == ' ':
                     board[col][row] = computer
                     print("Computer is thinking...")
-                    sleep(0.5)
-                    print(f"Computer placed disc in column {col + 1}")
+                    sleep(0.9)
+                    print()
+                    print(f"{Fore.YELLOW}Computer placed disc in column {col + 1}")
+                    sleep(0.9)
                     return
 
 
@@ -239,7 +241,7 @@ def game_loop(board, win_conditions, mode):     #This is the heart of the code
             elif current_player == computer:
                 sleep(0.3)
                 print("Computer's turn...")
-                sleep(0.5)
+                sleep(0.9)
                 computer_move(board, computer)
                 
         moves_counter['total'] += 1
@@ -305,7 +307,6 @@ def main():
 #Checks if script is being run directly, and not imported as a module
 if __name__ == "__main__":
     main()
-
 
         
     
