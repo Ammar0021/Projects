@@ -6,7 +6,8 @@
 #Placing a piece
 #winning conditions
 #Game loop
-#winning line
+#Computer Difficulty
+#Update main()
 
 
 import colorama
@@ -53,16 +54,17 @@ def game_mode():
             clear_screen()
             
             if choice == "1":
-                print(Fore.LIGHTYELLOW_EX + "Starting Single Player Mode!")
+                print(Fore.LIGHTYELLOW_EX + "Starting Single Player Mode!\n")
                 sleep(0.7)
+                difficulty = choose_difficulty()
                 print()
-                return "single"  # Stores "single" in "mode"
+                return "single", difficulty  # Stores "single" in "mode" 
             
             elif choice == "2":
                 print(Fore.LIGHTMAGENTA_EX + "Starting Two Player Mode!") 
                 sleep(0.7)
                 print()
-                return "multi"  # Stores "multi" in "mode"
+                return "multi", None  # Stores "multi" in "mode",  None is for No Difficulty
              
             else:
                 raise ValueError(Fore.LIGHTRED_EX + "Invalid choice! Please enter 1 or 2 only.") 
@@ -123,7 +125,7 @@ def player_move(board, player):
         try:
             print()
             sleep(0.3)
-            col = int(input(random.choice(colours) + "Choose a Column (1-7): " + Style.RESET_ALL).strip()) - 1  # -1 due to 0 indexing
+            col = int(input(random.choice(colours) + Style.BRIGHT + "Choose a Column (1-7): " + Style.RESET_ALL).strip()) - 1  # -1 due to 0 indexing
             if col < 0 or col > 6:
                 raise ValueError(Fore.LIGHTRED_EX + "Invalid Choice!, Please choose between 1 and 7, only")
 
@@ -138,7 +140,7 @@ def player_move(board, player):
         except ValueError as error:
             print (error)
 
-def computer_move(board, computer):
+def computer_easy(board, computer):
     while True:
         col = randint(0, 6)
         if board[col][0] == ' ':
@@ -148,11 +150,88 @@ def computer_move(board, computer):
                     print("Computer is thinking...")
                     sleep(0.9)
                     print()
-                    print(f"{Fore.YELLOW}Computer placed disc in column {col + 1}")
+                    print(f"{Fore.LIGHTGREEN_EX}Computer placed disc in column {col + 1}")
                     sleep(0.9)
                     return
+                
+def computer_medium(board, computer, player):
+    #Blocking the Player's Winning Move    
+    for col in range (7):
+        if board[col][0] == ' ':            
+            for row in reversed(range(6)):
+                if board[col][row] == ' ':
+                    board[col][row] = player 
+                    if check_win(board, winning_conditions(), player):   # If player is winning, Computer will Block the move
+                        board[col][row] = computer 
+                        print(f"{Fore.LIGHTYELLOW_EX}COmputer placed disc in column {col + 1}")
+                        sleep(0.9)
+                        return
+                    board[col][row] = ' '   #this undoes the move if it didn't Block
+    
+    computer_easy(board, computer)  # Reverts to Easy Mode if no Win or Block found
+    
+def computer_hard(board, computer, player):
+    # Logic for trying to win
+    for col in range(7):
+        if board[col][0] == ' ':  # Check if column is not full
+            for row in reversed(range(6)):
+                if board[col][row] == ' ':
+                    board[col][row] = computer
+                    if check_win(board, winning_conditions(), computer):  # If Computer will Win, it will play this move
+                        print(f"{Fore.YELLOW}Computer placed disc in column {col + 1}")
+                        sleep(0.9)
+                        return
+                    board[col][row] = ' '  #this undoes the move if it didn't Block
+
+    # If there is no winning move, Computer will Block
+    for col in range(7):
+        if board[col][0] == ' ': 
+            for row in reversed(range(6)):
+                if board[col][row] == ' ':
+                    board[col][row] = player
+                    if check_win(board, winning_conditions(), player): 
+                        board[col][row] = computer
+                        print(f"{Fore.YELLOW}Computer placed disc in column {col + 1}")
+                        sleep(0.9)
+                        return
+                    board[col][row] = ' '  
+
+    computer_easy(board, computer)  
 
 
+def choose_difficulty():
+    while True:
+        try:
+            print(Fore.LIGHTMAGENTA_EX + "Select Difficulty:\n")
+            print(Fore.GREEN + "1. Easy")
+            print(Fore.YELLOW + "2. Medium")
+            print(Fore.RED + Style.BRIGHT + "3. Hard\n")
+            
+            difficulty = input("Enter 1,2 or 3: ").strip()
+            
+            if difficulty == "1":
+                print(Fore.GREEN + "You have selected Easy Mode")
+                sleep(0.5)
+                return "easy"  #Stores 'easy' in difficulty
+            
+            elif difficulty == "2":
+                print(Fore.YELLOW + "You have selected Medium Mode")
+                sleep(0.5)
+                return "medium"
+            
+            elif difficulty == "3":
+                print(Fore.RED + "You have selected Hard Mode!")
+                sleep(0.5)
+                return 'hard'
+            
+            else:
+                raise ValueError(Fore.LIGHTRED_EX + "Invalid Choice! Please enter 1,2 or 3 only.")
+        except ValueError as error:
+            print(error)
+            
+            
+                         
+            
 def disc_colour(mode):
     if mode == "multi":
         while True:
@@ -205,9 +284,8 @@ def disc_colour(mode):
                 print(error)
         return player, computer
 
-from collections import defaultdict
 
-def game_loop(board, win_conditions, mode):     # This is the heart of the code
+def game_loop(board, win_conditions, mode, difficulty):     # This is the heart of the code
     if mode == "multi":
         player1, player2 = disc_colour(mode)  # Gets disc colour for both players
         current_player = player1
@@ -225,7 +303,7 @@ def game_loop(board, win_conditions, mode):     # This is the heart of the code
         turn_counter['turn'] += 1
         
         # Display the current turn
-        print(Fore.LIGHTCYAN_EX + f"Turn {turn_counter['turn']}")
+        print(Fore.LIGHTCYAN_EX + Style.BRIGHT + f"Turn {turn_counter['turn']}")
         print()
 
         if mode == "multi":
@@ -252,7 +330,13 @@ def game_loop(board, win_conditions, mode):     # This is the heart of the code
                 sleep(0.3)
                 print("Computer's turn...")
                 sleep(0.9)
-                computer_move(board, computer)
+                
+                if difficulty == "easy":
+                    computer_easy(board, computer)
+                elif difficulty == "medium":
+                    computer_medium(board, computer, player)
+                elif difficulty == "hard":
+                    computer_hard(board, computer, player)
                 
         moves_counter['total'] += 1
                 
@@ -309,12 +393,18 @@ def game_loop(board, win_conditions, mode):     # This is the heart of the code
 
 
 def main():        
-    welcome_screen()        
+    welcome_screen()      
     board = initialise_board()
     display_board(board)
-    mode = game_mode()
+    
+    mode, difficulty = game_mode()
+    if mode == "single":
+        difficulty = choose_difficulty
+    else:
+        difficulty = None   #This is for Multiplayer mode (which has no Difficulty, obviously)
+        
     win_conditions = winning_conditions()
-    game_loop(board, win_conditions, mode)
+    game_loop(board, win_conditions, mode, difficulty)
  
  
 
