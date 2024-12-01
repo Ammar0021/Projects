@@ -7,7 +7,9 @@
 #winning conditions
 #Game loop
 #Computer Difficulty
+#Update other function arguments
 #Update main()
+#Add score counter
 
 
 import colorama
@@ -64,7 +66,7 @@ def game_mode():
                 print(Fore.LIGHTMAGENTA_EX + "Starting Two Player Mode!") 
                 sleep(0.7)
                 print()
-                return "multi", None  # Stores "multi" in "mode",  None is for No Difficulty
+                return "multi", None  # Stores "multi" in "mode",  None because multiplayer has no difficulty lol
              
             else:
                 raise ValueError(Fore.LIGHTRED_EX + "Invalid choice! Please enter 1 or 2 only.") 
@@ -147,11 +149,10 @@ def computer_easy(board, computer):
             for row in reversed(range(6)):
                 if board[col][row] == ' ':
                     board[col][row] = computer
-                    print("Computer is thinking...")
+                    print(Fore.LIGHTGREEN_EX + "Computer is thinking...\n")
                     sleep(0.9)
-                    print()
                     print(f"{Fore.LIGHTGREEN_EX}Computer placed disc in column {col + 1}")
-                    sleep(0.9)
+                    sleep(0.4)
                     return
                 
 def computer_medium(board, computer, player):
@@ -163,7 +164,9 @@ def computer_medium(board, computer, player):
                     board[col][row] = player 
                     if check_win(board, winning_conditions(), player):   # If player is winning, Computer will Block the move
                         board[col][row] = computer 
-                        print(f"{Fore.LIGHTYELLOW_EX}COmputer placed disc in column {col + 1}")
+                        print(Fore.LIGHTGREEN_EX + "Computer is thinking...")
+                        sleep(0.9)
+                        print(f"{Fore.LIGHTYELLOW_EX}Computer placed disc in column {col + 1}")
                         sleep(0.9)
                         return
                     board[col][row] = ' '   #this undoes the move if it didn't Block
@@ -178,6 +181,8 @@ def computer_hard(board, computer, player):
                 if board[col][row] == ' ':
                     board[col][row] = computer
                     if check_win(board, winning_conditions(), computer):  # If Computer will Win, it will play this move
+                        print(Fore.LIGHTRED_EX + "Computer is thinking...")
+                        sleep(0.9)
                         print(f"{Fore.YELLOW}Computer placed disc in column {col + 1}")
                         sleep(0.9)
                         return
@@ -303,7 +308,7 @@ def game_loop(board, win_conditions, mode, difficulty):     # This is the heart 
         turn_counter['turn'] += 1
         
         # Display the current turn
-        print(Fore.LIGHTCYAN_EX + Style.BRIGHT + f"Turn {turn_counter['turn']}")
+        print(Fore.LIGHTBLUE_EX + Style.BRIGHT + f"Turn {turn_counter['turn']}")
         print()
 
         if mode == "multi":
@@ -399,7 +404,7 @@ def main():
     
     mode, difficulty = game_mode()
     if mode == "single":
-        difficulty = choose_difficulty
+        pass   #pass, because "difficulty = choose_difficulty()" was done before
     else:
         difficulty = None   #This is for Multiplayer mode (which has no Difficulty, obviously)
         
@@ -408,9 +413,9 @@ def main():
  
  
 
-#Checks if script is being run directly, and not imported as a module
 if __name__ == "__main__":
     main()
+
 
 
 
