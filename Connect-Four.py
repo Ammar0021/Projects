@@ -205,6 +205,8 @@ def disc_colour(mode):
                 print(error)
         return player, computer
 
+from collections import defaultdict
+
 def game_loop(board, win_conditions, mode):     # This is the heart of the code
     if mode == "multi":
         player1, player2 = disc_colour(mode)  # Gets disc colour for both players
@@ -214,10 +216,18 @@ def game_loop(board, win_conditions, mode):     # This is the heart of the code
         current_player = player
 
     moves_counter = defaultdict(int)  # Counts total moves made
+    turn_counter = defaultdict(int)   # This will count how many turns have passed
     
     while moves_counter['total'] < 42:  # 42 is the max moves (7 x 6 =42)
         display_board(board)
         
+        # Increment the turn counter
+        turn_counter['turn'] += 1
+        
+        # Display the current turn
+        print(Fore.LIGHTCYAN_EX + f"Turn {turn_counter['turn']}")
+        print()
+
         if mode == "multi":
             if current_player == player1:
                 sleep(0.3)
@@ -299,6 +309,7 @@ def game_loop(board, win_conditions, mode):     # This is the heart of the code
 
 
 
+
 def main():        
     welcome_screen()        
     board = initialise_board()
@@ -312,8 +323,6 @@ def main():
 #Checks if script is being run directly, and not imported as a module
 if __name__ == "__main__":
     main()
-        
-    
 
 
 
