@@ -308,8 +308,6 @@ def game_loop(board, win_conditions, mode):     # This is the heart of the code
 
 
 
-
-
 def main():        
     welcome_screen()        
     board = initialise_board()
