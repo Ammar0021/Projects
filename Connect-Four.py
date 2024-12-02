@@ -23,7 +23,13 @@ from collections import deque, defaultdict
 
 
 colorama.init(autoreset=True)
-colours = [Fore.BLUE, Fore.LIGHTBLUE_EX, Fore.CYAN, Fore.LIGHTCYAN_EX, Fore.MAGENTA, Fore.LIGHTMAGENTA_EX,Fore.LIGHTYELLOW_EX, Fore.YELLOW]
+
+result_counter = {
+    'player1': defaultdict(int),
+    'player2': defaultdict(int),
+    'single': defaultdict(int)
+    
+}
 
 RED_DISC = Fore.RED + "O"
 YELLOW_DISC = Fore.YELLOW + "O"
@@ -127,6 +133,7 @@ def player_move(board, player):
         try:
             print()
             sleep(0.3)
+            colours = [Fore.BLUE, Fore.LIGHTBLUE_EX, Fore.CYAN, Fore.LIGHTCYAN_EX, Fore.MAGENTA, Fore.LIGHTMAGENTA_EX,Fore.LIGHTYELLOW_EX, Fore.YELLOW]
             col = int(input(random.choice(colours) + Style.BRIGHT + "Choose a Column (1-7): " + Style.RESET_ALL).strip()) - 1  # -1 due to 0 indexing
             if col < 0 or col > 6:
                 raise ValueError(Fore.LIGHTRED_EX + "Invalid Choice!, Please choose between 1 and 7, only")
@@ -150,6 +157,7 @@ def computer_easy(board, computer):
                 if board[col][row] == ' ':
                     board[col][row] = computer
                     print(Fore.LIGHTGREEN_EX + "Computer is thinking...\n")
+                    sys.stdout.flush() #forces python to write to the terminal immediately
                     sleep(0.9)
                     print(f"{Fore.LIGHTGREEN_EX}Computer placed disc in column {col + 1}")
                     sleep(0.7)
@@ -165,6 +173,7 @@ def computer_medium(board, computer, player):
                     if check_win(board, winning_conditions(), player):   # If player is winning, Computer will Block the move
                         board[col][row] = computer 
                         print(Fore.LIGHTYELLOW_EX + "Computer is thinking...\n")
+                        sys.stdout.flush()
                         sleep(0.9)
                         print(f"{Fore.LIGHTYELLOW_EX}Computer placed disc in column {col + 1}")
                         sleep(0.7)
@@ -183,6 +192,7 @@ def computer_hard(board, computer, player):
                     board[col][row] = computer
                     if check_win(board, winning_conditions(), computer):  # If Computer will Win, it will play this move
                         print(Fore.LIGHTRED_EX + "Computer is thinking...\n")
+                        sys.stdout.flush()
                         sleep(0.9)
                         print(f"{Fore.YELLOW}Computer placed disc in column {col + 1}")
                         sleep(0.7)
@@ -198,8 +208,11 @@ def computer_hard(board, computer, player):
                     board[col][row] = player
                     if check_win(board, winning_conditions(), player): 
                         board[col][row] = computer
-                        print(f"{Fore.YELLOW}Computer placed disc in column {col + 1}")
+                        print(Fore.LIGHTRED_EX + "Computer is thinking...\n")
+                        sys.stdout.flush()
                         sleep(0.9)
+                        print(f"{Fore.YELLOW}Computer placed disc in column {col + 1}")
+                        sleep(0.7)
                         return
                     board[col][row] = ' '
                     break  
@@ -351,15 +364,23 @@ def game_loop(board, win_conditions, mode, difficulty):     # This is the heart 
         if check_win(board, win_conditions, current_player):    # Checks if current player has won
             display_board(board)  
             if mode == "multi":
+                
                 if current_player == player1:
                     winner = "Player 1"
+                    result_counter['player1']['wins'] += 1
+                    
                 elif current_player == player2:
                     winner = "Player 2"
+                    result_counter['player2']['wins'] += 1
+                    
             elif mode == "single":
                 if current_player == player:
                     winner = "You"
+                    result_counter['single']['wins'] += 1
+                    
                 elif current_player == computer:
                     winner = "Computer"
+                    result_counter['single']['losses'] += 1
 
             if winner == "You":
                 print(Fore.LIGHTGREEN_EX + f"{winner} win!")  # Grammar handling
@@ -382,6 +403,13 @@ def game_loop(board, win_conditions, mode, difficulty):     # This is the heart 
     if moves_counter['total'] == 42 and not check_win(board, win_conditions, current_player):    # If board is full and no winner
         display_board(board)
         print(Fore.LIGHTCYAN_EX + "It's a Draw!")
+        
+        if mode == "multi":
+            result_counter['player1']['draws'] += 1
+            result_counter['player2']['draws'] += 1
+        elif mode == "single":
+            result_counter['single']['draws'] += 1
+            
     
     while True:
         try:
@@ -389,9 +417,27 @@ def game_loop(board, win_conditions, mode, difficulty):     # This is the heart 
             if play_again == "yes":
                 main()  # Restarts the game
             elif play_again == "no":
-                sleep(0.5)
-                print("\n" + Fore.LIGHTCYAN_EX + "Thanks for playing!")
-                sys.exit()# Exits the game
+                print("\nGame Results:")
+                
+                if mode == "multi":
+                    print(f"Player 1 - {Fore.LIGHTGREEN_EX}Wins: {result_counter['player1']['wins']} | "
+                          f"{Fore.LIGHTYELLOW_EX}Draws: {result_counter['player1']['draws']}")
+                    
+                    print(f"Player 2 - {Fore.LIGHTGREEN_EX}Wins: {result_counter['player2']['wins']} | "
+                          f"{Fore.LIGHTYELLOW_EX}Draws: {result_counter['player2']['draws']}")
+                
+                elif mode == "single":
+                    print(f"You - {Fore.LIGHTGREEN_EX}Wins: {result_counter['single']['wins']} | "
+                        f"{Fore.LIGHTYELLOW_EX}Losses: {result_counter['single']['losses']} | "
+                        f"{Fore.LIGHTRED_EX}Draws: {result_counter['single']['draws']}")
+                    
+                    print(f"Computer - {Fore.LIGHTGREEN_EX}Wins: {result_counter['single']['wins']} | "
+                        f"{Fore.LIGHTYELLOW_EX}Losses: {result_counter['single']['losses']} | "
+                        f"{Fore.LIGHTRED_EX}Draws: {result_counter['single']['draws']}")
+
+                sleep(7)
+                print(Fore.LIGHTBLUE_EX + "Thanks for playing!")
+                sys.exit()
                 
             else:
                 raise ValueError(Fore.LIGHTRED_EX + "Invalid input! Please enter 'yes' or 'no' only.")
@@ -418,6 +464,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
