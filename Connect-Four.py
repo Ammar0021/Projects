@@ -46,8 +46,8 @@ def clear_screen():
 
 def welcome_screen():
     clear_screen()
-    print(Fore.YELLOW + Style.BRIGHT + "Welcome to Connect Four!")
-    sleep(0.75)
+    print(Fore.YELLOW + Style.BRIGHT + '\033[4m' + "Welcome to Connect Four!" + '\033[24m')  # '\033[4m' is ANSI escape for underlining
+    sleep(2)
     
 def game_mode():
     while True:
@@ -220,6 +220,68 @@ def computer_hard(board, computer, player):
 
     computer_easy(board, computer)  
 
+def computer_asian(board, computer, player):
+    # Step 1: Check if the computer can win in the current move
+    for col in range(7):
+        if board[col][0] == ' ':  
+            for row in reversed(range(6)):
+                if board[col][row] == ' ':
+                    board[col][row] = computer
+                    if check_win(board, winning_conditions(), computer):  
+                        print(Fore.LIGHTBLACK_EX + "Computer is thinking...\n")
+                        sys.stdout.flush()
+                        sleep(0.9)
+                        print(f"{Fore.LIGHTBLACK_EX}Computer placed disc in column {col + 1}")
+                        sleep(0.7)
+                        return
+                    board[col][row] = ' '
+                    break
+
+    # Step 2: Block opponent's winning move
+    for col in range(7):
+        if board[col][0] == ' ':  
+            for row in reversed(range(6)):
+                if board[col][row] == ' ':
+                    board[col][row] = player
+                    if check_win(board, winning_conditions(), player):  
+                        board[col][row] = computer
+                        print(Fore.LIGHTBLACK_EX + "Computer is thinking...\n")
+                        sys.stdout.flush()
+                        sleep(0.9)
+                        print(f"{Fore.LIGHTBLACK_EX}Computer placed disc in column {col + 1}")
+                        sleep(0.7)
+                        return
+                    board[col][row] = ' '
+                    break
+
+    # Step 3: Check if the computer can set up a double win
+    for col in range(7):
+        if board[col][0] == ' ':  
+            for row in reversed(range(6)):
+                if board[col][row] == ' ':
+                    board[col][row] = computer
+                    # Simulate placing the disc and check if it creates a winning opportunity in next turns
+                    if check_win(board, winning_conditions(), computer):
+                        board[col][row] = ' '
+                        break  # No need to check further in this column
+                    board[col][row] = ' '  # Undo the move
+                    break
+
+    # Step 4: Prioritize placing in the center column if available
+    if board[3][0] == ' ':
+        for row in reversed(range(6)):
+            if board[3][row] == ' ':
+                board[3][row] = computer
+                print(Fore.LIGHTBLACK_EX + "Computer is thinking...\n")
+                sys.stdout.flush()
+                sleep(0.9)
+                print(f"{Fore.LIGHTBLACK_EX}Computer placed disc in column {col + 1}")
+                sleep(0.7)
+                return
+
+    computer_easy(board, computer)
+
+    
 
 def choose_difficulty():
     while True:
@@ -227,9 +289,10 @@ def choose_difficulty():
             print(Fore.LIGHTMAGENTA_EX + "Select Difficulty:\n")
             print(Fore.GREEN + "1. Easy")
             print(Fore.YELLOW + "2. Medium")
-            print(Fore.RED + Style.BRIGHT + "3. Hard\n")
+            print(Fore.RED + Style.BRIGHT + "3. Hard")
+            print(Fore.LIGHTBLACK_EX + "4. Asian\n")
             
-            difficulty = input("Enter 1,2 or 3: ").strip()
+            difficulty = input("Enter 1,2,3 or 4: ").strip()
             
             if difficulty == "1":
                 print(Fore.GREEN + "You have selected Easy Mode")
@@ -245,6 +308,11 @@ def choose_difficulty():
                 print(Style.BRIGHT + Fore.RED + "You have selected Hard Mode!")
                 sleep(0.5)
                 return 'hard'
+            
+            elif difficulty == "4":
+                print(Style.BRIGHT + Fore.LIGHTBLACK_EX + "So you have chosen death?")
+                sleep(0.5)
+                return 'asian'
             
             else:
                 raise ValueError(Fore.LIGHTRED_EX + "Invalid Choice! Please enter 1,2 or 3 only.")
@@ -358,6 +426,8 @@ def game_loop(board, win_conditions, mode, difficulty):     # This is the heart 
                     computer_medium(board, computer, player)
                 elif difficulty == "hard":
                     computer_hard(board, computer, player)
+                elif difficulty == "asian":
+                    computer_asian(board, computer, player)
                 
         moves_counter['total'] += 1
                 
@@ -479,7 +549,6 @@ def main():
 
 if __name__ == "__main__":
     main()
-
 
 
 
