@@ -11,6 +11,10 @@
 #Update main()
 #Add score counter
 
+#Issues:
+#Losses Counter
+#Pattern debugging
+
 
 import colorama
 import os
@@ -150,6 +154,7 @@ def player_move(board, player):
         except ValueError as error:
             print (error)
 
+
 def computer_easy(board, computer):
     while True:
         col = randint(0, 6)
@@ -221,67 +226,122 @@ def computer_hard(board, computer, player):
     computer_easy(board, computer)  
 
 def computer_asian(board, computer, player):
-    # Step 1: Check if the computer can win in the current move
+    def check_diagonal_win(board, player):
+        # Check diagonals for a win (4 in a row)
+        for col in range(7):
+            for row in range(6):
+                # Check bottom-left to top-right diagonal
+                if col <= 3 and row <= 2:
+                    if (board[col][row] == player and 
+                        board[col+1][row+1] == player and 
+                        board[col+2][row+2] == player and 
+                        board[col+3][row+3] == player):
+                        return True
+                # Check bottom-right to top-left diagonal
+                if col >= 3 and row <= 2:
+                    if (board[col][row] == player and 
+                        board[col-1][row+1] == player and 
+                        board[col-2][row+2] == player and 
+                        board[col-3][row+3] == player):
+                        return True
+        return False
+
+    def check_2InaRow(board, player):
+        # Check for potential 2-in-a-row setups horizontally, vertically, or diagonally
+        for col in range(7):
+            for row in range(6):
+                # Check horizontal two-in-a-row
+                if col <= 4 and board[col][row] == ' ' and board[col+1][row] == player and board[col+2][row] == player:
+                    return True
+                # Check vertical two-in-a-row
+                if row <= 3 and board[col][row] == ' ' and board[col][row+1] == player and board[col][row+2] == player:
+                    return True
+                # Check bottom-left to top-right diagonal two-in-a-row
+                if col <= 3 and row <= 2 and board[col][row] == ' ' and board[col+1][row+1] == player and board[col+2][row+2] == player:
+                    return True
+                # Check bottom-right to top-left diagonal two-in-a-row
+                if col >= 2 and row <= 2 and board[col][row] == ' ' and board[col-1][row+1] == player and board[col-2][row+2] == player:
+                    return True
+        return False
+
+    def check_immediate_threat(board, player):
+        # Simulate each possible move and see if the player can win
+        for col in range(7):
+            if board[col][0] == ' ':  # Column is not full
+                for row in reversed(range(6)):
+                    if board[col][row] == ' ':
+                        # Simulate player's move
+                        board[col][row] = player
+                        # Check if this move leads to a win
+                        if check_win(board, winning_conditions(), player) or check_diagonal_win(board, player):
+                            board[col][row] = ' '  # Undo simulation
+                            return col  # Return the column where the threat exists
+                        board[col][row] = ' '  # Undo simulation
+                        break
+        return None  # No immediate threat found
+
+    # Step 1: Check for immediate player threats and block them
+    threat_col = check_immediate_threat(board, player)
+    if threat_col is not None:
+        for row in reversed(range(6)):
+            if board[threat_col][row] == ' ':
+                board[threat_col][row] = computer  # Block the player's win
+                print(Fore.LIGHTBLACK_EX + "Computer is thinking...\n")
+                sys.stdout.flush()
+                sleep(0.9)
+                print(f"{Fore.LIGHTYELLOW_EX}Computer Blocks your win in column {threat_col + 1}")
+                sleep(0.7)
+                return
+
+    # Step 2: Check if the computer can win
     for col in range(7):
         if board[col][0] == ' ':  
             for row in reversed(range(6)):
                 if board[col][row] == ' ':
-                    board[col][row] = computer
-                    if check_win(board, winning_conditions(), computer):  
+                    board[col][row] = computer  # Simulate computer move
+                    if check_win(board, winning_conditions(), computer) or check_diagonal_win(board, computer):
                         print(Fore.LIGHTBLACK_EX + "Computer is thinking...\n")
                         sys.stdout.flush()
                         sleep(0.9)
                         print(f"{Fore.LIGHTRED_EX}Computer Wins by placing disc in column {col + 1}")
                         sleep(0.7)
                         return
-                    board[col][row] = ' '
+                    board[col][row] = ' '  # Undo simulation if not a win
                     break
 
-    # Step 2: Block opponent's winning move
+    # Step 3: Set up a trap (2 in a row)
     for col in range(7):
         if board[col][0] == ' ':  
             for row in reversed(range(6)):
                 if board[col][row] == ' ':
-                    board[col][row] = player
-                    if check_win(board, winning_conditions(), player):  
-                        board[col][row] = computer
+                    board[col][row] = computer  
+                    if check_2InaRow(board, computer):  # Check if it sets up a trap
                         print(Fore.LIGHTBLACK_EX + "Computer is thinking...\n")
                         sys.stdout.flush()
                         sleep(0.9)
-                        print(f"{Fore.LIGHTYELLOW_EX}Computer Blocks your win in column {col + 1}")
+                        print(f"{Fore.MAGENTA}Computer placed disc in column {col + 1}")
                         sleep(0.7)
                         return
-                    board[col][row] = ' '
+                    board[col][row] = ' ' 
                     break
 
-    # Step 3: Check if the computer can set up a double win
-    for col in range(7):
-        if board[col][0] == ' ':  
-            for row in reversed(range(6)):
-                if board[col][row] == ' ':
-                    board[col][row] = computer
-                    # Simulate placing the disc and check if it creates a winning opportunity in next turns
-                    if check_win(board, winning_conditions(), computer):
-                        board[col][row] = ' '
-                        break  # No need to check further in this column
-                    board[col][row] = ' '  # Undo the move
-                    break
-
-    # Step 4: Prioritize placing in the center column, if available
+    # Step 4: Prioritize placing in the center column 
     if board[3][0] == ' ':
         for row in reversed(range(6)):
             if board[3][row] == ' ':
-                board[3][row] = computer
+                board[3][row] = computer  # Place disc in the center
                 print(Fore.LIGHTBLACK_EX + "Computer is thinking...\n")
                 sys.stdout.flush()
                 sleep(0.9)
-                print(f"{Fore.LIGHTBLACK_EX}Computer placed disc in column 4")
+                print(f"{Fore.LIGHTBLUE_EX}Computer placed disc in column 4")
                 sleep(0.7)
                 return
 
     computer_easy(board, computer)
 
-    
+
+
+
 
 def choose_difficulty():
     while True:
@@ -549,6 +609,5 @@ def main():
 
 if __name__ == "__main__":
     main()
-
 
 
