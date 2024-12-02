@@ -176,7 +176,7 @@ def computer_medium(board, computer, player):
                         print(Fore.LIGHTYELLOW_EX + "Computer is thinking...\n")
                         sys.stdout.flush()
                         sleep(0.9)
-                        print(f"{Fore.LIGHTYELLOW_EX}Computer placed disc in column {col + 1}")
+                        print(f"{Fore.LIGHTYELLOW_EX}Computer Blocks your win in column {col + 1}")
                         sleep(0.7)
                         return
                     board[col][row] = ' '   #this undoes the move if it didn't Block
@@ -195,7 +195,7 @@ def computer_hard(board, computer, player):
                         print(Fore.LIGHTRED_EX + "Computer is thinking...\n")
                         sys.stdout.flush()
                         sleep(0.9)
-                        print(f"{Fore.YELLOW}Computer placed disc in column {col + 1}")
+                        print(f"{Fore.LIGHTRED_EX}Computer Wins by placing disc in column {col + 1}")
                         sleep(0.7)
                         return
                     board[col][row] = ' '  #this undoes the move if it didn't Block
@@ -212,7 +212,7 @@ def computer_hard(board, computer, player):
                         print(Fore.LIGHTRED_EX + "Computer is thinking...\n")
                         sys.stdout.flush()
                         sleep(0.9)
-                        print(f"{Fore.YELLOW}Computer placed disc in column {col + 1}")
+                        print(f"{Fore.LIGHTYELLOW_EX}Computer Blocks your win in column {col + 1}")
                         sleep(0.7)
                         return
                     board[col][row] = ' '
@@ -231,7 +231,7 @@ def computer_asian(board, computer, player):
                         print(Fore.LIGHTBLACK_EX + "Computer is thinking...\n")
                         sys.stdout.flush()
                         sleep(0.9)
-                        print(f"{Fore.LIGHTBLACK_EX}Computer placed disc in column {col + 1}")
+                        print(f"{Fore.LIGHTRED_EX}Computer Wins by placing disc in column {col + 1}")
                         sleep(0.7)
                         return
                     board[col][row] = ' '
@@ -248,7 +248,7 @@ def computer_asian(board, computer, player):
                         print(Fore.LIGHTBLACK_EX + "Computer is thinking...\n")
                         sys.stdout.flush()
                         sleep(0.9)
-                        print(f"{Fore.LIGHTBLACK_EX}Computer placed disc in column {col + 1}")
+                        print(f"{Fore.LIGHTYELLOW_EX}Computer Blocks your win in column {col + 1}")
                         sleep(0.7)
                         return
                     board[col][row] = ' '
@@ -267,7 +267,7 @@ def computer_asian(board, computer, player):
                     board[col][row] = ' '  # Undo the move
                     break
 
-    # Step 4: Prioritize placing in the center column if available
+    # Step 4: Prioritize placing in the center column, if available
     if board[3][0] == ' ':
         for row in reversed(range(6)):
             if board[3][row] == ' ':
@@ -275,7 +275,7 @@ def computer_asian(board, computer, player):
                 print(Fore.LIGHTBLACK_EX + "Computer is thinking...\n")
                 sys.stdout.flush()
                 sleep(0.9)
-                print(f"{Fore.LIGHTBLACK_EX}Computer placed disc in column {col + 1}")
+                print(f"{Fore.LIGHTBLACK_EX}Computer placed disc in column 4")
                 sleep(0.7)
                 return
 
