@@ -152,7 +152,7 @@ def computer_easy(board, computer):
                     print(Fore.LIGHTGREEN_EX + "Computer is thinking...\n")
                     sleep(0.9)
                     print(f"{Fore.LIGHTGREEN_EX}Computer placed disc in column {col + 1}")
-                    sleep(0.4)
+                    sleep(0.7)
                     return
                 
 def computer_medium(board, computer, player):
@@ -164,12 +164,13 @@ def computer_medium(board, computer, player):
                     board[col][row] = player 
                     if check_win(board, winning_conditions(), player):   # If player is winning, Computer will Block the move
                         board[col][row] = computer 
-                        print(Fore.LIGHTGREEN_EX + "Computer is thinking...")
+                        print(Fore.LIGHTYELLOW_EX + "Computer is thinking...\n")
                         sleep(0.9)
                         print(f"{Fore.LIGHTYELLOW_EX}Computer placed disc in column {col + 1}")
-                        sleep(0.9)
+                        sleep(0.7)
                         return
                     board[col][row] = ' '   #this undoes the move if it didn't Block
+                    break  
     
     computer_easy(board, computer)  # Reverts to Easy Mode if no Win or Block found
     
@@ -181,12 +182,13 @@ def computer_hard(board, computer, player):
                 if board[col][row] == ' ':
                     board[col][row] = computer
                     if check_win(board, winning_conditions(), computer):  # If Computer will Win, it will play this move
-                        print(Fore.LIGHTRED_EX + "Computer is thinking...")
+                        print(Fore.LIGHTRED_EX + "Computer is thinking...\n")
                         sleep(0.9)
                         print(f"{Fore.YELLOW}Computer placed disc in column {col + 1}")
-                        sleep(0.9)
+                        sleep(0.7)
                         return
                     board[col][row] = ' '  #this undoes the move if it didn't Block
+                    break  
 
     # If there is no winning move, Computer will Block
     for col in range(7):
@@ -199,7 +201,8 @@ def computer_hard(board, computer, player):
                         print(f"{Fore.YELLOW}Computer placed disc in column {col + 1}")
                         sleep(0.9)
                         return
-                    board[col][row] = ' '  
+                    board[col][row] = ' '
+                    break  
 
     computer_easy(board, computer)  
 
@@ -225,7 +228,7 @@ def choose_difficulty():
                 return "medium"
             
             elif difficulty == "3":
-                print(Fore.RED + "You have selected Hard Mode!")
+                print(Style.BRIGHT + Fore.RED + "You have selected Hard Mode!")
                 sleep(0.5)
                 return 'hard'
             
@@ -334,7 +337,7 @@ def game_loop(board, win_conditions, mode, difficulty):     # This is the heart 
             elif current_player == computer:
                 sleep(0.3)
                 print("Computer's turn...")
-                sleep(0.9)
+                sleep(0.6)
                 
                 if difficulty == "easy":
                     computer_easy(board, computer)
@@ -415,7 +418,6 @@ def main():
 
 if __name__ == "__main__":
     main()
-
 
 
 
