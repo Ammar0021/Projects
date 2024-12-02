@@ -24,12 +24,14 @@ from collections import deque, defaultdict
 
 colorama.init(autoreset=True)
 
-result_counter = {
-    'player1': defaultdict(int),
-    'player2': defaultdict(int),
-    'single': defaultdict(int)
-    
-}
+colours = [Fore.BLUE, Fore.LIGHTBLUE_EX, Fore.CYAN, Fore.LIGHTCYAN_EX, Fore.MAGENTA, Fore.LIGHTMAGENTA_EX,Fore.LIGHTYELLOW_EX, Fore.YELLOW]
+
+result_counter_single = defaultdict(lambda: defaultdict(int, {'wins': 0, 'losses': 0, 'draws': 0}))
+result_counter_multi = defaultdict(lambda: defaultdict(int, {'wins': 0, 'draws': 0}))
+
+played_single = False
+played_multi = False
+
 
 RED_DISC = Fore.RED + "O"
 YELLOW_DISC = Fore.YELLOW + "O"
@@ -133,7 +135,6 @@ def player_move(board, player):
         try:
             print()
             sleep(0.3)
-            colours = [Fore.BLUE, Fore.LIGHTBLUE_EX, Fore.CYAN, Fore.LIGHTCYAN_EX, Fore.MAGENTA, Fore.LIGHTMAGENTA_EX,Fore.LIGHTYELLOW_EX, Fore.YELLOW]
             col = int(input(random.choice(colours) + Style.BRIGHT + "Choose a Column (1-7): " + Style.RESET_ALL).strip()) - 1  # -1 due to 0 indexing
             if col < 0 or col > 6:
                 raise ValueError(Fore.LIGHTRED_EX + "Invalid Choice!, Please choose between 1 and 7, only")
@@ -314,17 +315,16 @@ def game_loop(board, win_conditions, mode, difficulty):     # This is the heart 
         player, computer = disc_colour(mode)
         current_player = player
 
-    moves_counter = defaultdict(int)  # Counts total moves made
-    turn_counter = defaultdict(int)   # This will count how many turns have passed
+    moves_counter = defaultdict(int)  
+    turn_counter = defaultdict(int)   
     
     while moves_counter['total'] < 42:  # 42 is the max moves (7 x 6 =42)
         display_board(board)
         
-        # Increment the turn counter
         turn_counter['turn'] += 1
         
         # Display the current turn
-        print(Fore.LIGHTBLUE_EX + Style.BRIGHT + f"Turn {turn_counter['turn']}")
+        print(random.choice(colours) + Style.BRIGHT + f"Turn {turn_counter['turn']}")
         print()
 
         if mode == "multi":
@@ -367,20 +367,20 @@ def game_loop(board, win_conditions, mode, difficulty):     # This is the heart 
                 
                 if current_player == player1:
                     winner = "Player 1"
-                    result_counter['player1']['wins'] += 1
+                    result_counter_multi['player1']['wins'] += 1
                     
                 elif current_player == player2:
                     winner = "Player 2"
-                    result_counter['player2']['wins'] += 1
+                    result_counter_multi['player2']['wins'] += 1
                     
             elif mode == "single":
                 if current_player == player:
                     winner = "You"
-                    result_counter['single']['wins'] += 1
+                    result_counter_single['single']['wins'] += 1
                     
                 elif current_player == computer:
                     winner = "Computer"
-                    result_counter['single']['losses'] += 1
+                    result_counter_single['single']['losses'] += 1
 
             if winner == "You":
                 print(Fore.LIGHTGREEN_EX + f"{winner} win!")  # Grammar handling
@@ -405,38 +405,41 @@ def game_loop(board, win_conditions, mode, difficulty):     # This is the heart 
         print(Fore.LIGHTCYAN_EX + "It's a Draw!")
         
         if mode == "multi":
-            result_counter['player1']['draws'] += 1
-            result_counter['player2']['draws'] += 1
+            result_counter_multi['player1']['draws'] += 1
+            result_counter_multi['player2']['draws'] += 1
         elif mode == "single":
-            result_counter['single']['draws'] += 1
+            result_counter_single['single']['draws'] += 1
             
-    
+
+def handle_play_again(mode, result_counter_single, result_counter_multi):    
     while True:
         try:
             play_again = input("Do you want to play again? (yes/no): ").strip().lower()
             if play_again == "yes":
                 main()  # Restarts the game
             elif play_again == "no":
-                print("\nGame Results:")
+                print("\n" + Style.BRIGHT +Fore.LIGHTRED_EX + "Game " + Fore.LIGHTYELLOW_EX + "Results:\n")
                 
-                if mode == "multi":
-                    print(f"Player 1 - {Fore.LIGHTGREEN_EX}Wins: {result_counter['player1']['wins']} | "
-                          f"{Fore.LIGHTYELLOW_EX}Draws: {result_counter['player1']['draws']}")
+                if played_multi:
+                    print(f"{random.choice(colours)}Player 1 - {Fore.LIGHTGREEN_EX}Wins: {result_counter_multi['player1']['wins']} | "
+                        f"{Fore.LIGHTYELLOW_EX}Draws: {result_counter_multi['player1']['draws']}")
                     
-                    print(f"Player 2 - {Fore.LIGHTGREEN_EX}Wins: {result_counter['player2']['wins']} | "
-                          f"{Fore.LIGHTYELLOW_EX}Draws: {result_counter['player2']['draws']}")
-                
-                elif mode == "single":
-                    print(f"You - {Fore.LIGHTGREEN_EX}Wins: {result_counter['single']['wins']} | "
-                        f"{Fore.LIGHTYELLOW_EX}Losses: {result_counter['single']['losses']} | "
-                        f"{Fore.LIGHTRED_EX}Draws: {result_counter['single']['draws']}")
+                    print(f"{random.choice(colours)}Player 2 - {Fore.LIGHTGREEN_EX}Wins: {result_counter_multi['player2']['wins']} | "
+                        f"{Fore.LIGHTYELLOW_EX}Draws: {result_counter_multi['player2']['draws']}")
+            
+                if played_single:
+                    print(f"{random.choice(colours)}You - {Fore.LIGHTGREEN_EX}Wins: {result_counter_single['single']['wins']} | "
+                        f"{Fore.LIGHTYELLOW_EX}Losses: {result_counter_single['single']['losses']} | "
+                        f"{Fore.LIGHTRED_EX}Draws: {result_counter_single['single']['draws']}")
                     
-                    print(f"Computer - {Fore.LIGHTGREEN_EX}Wins: {result_counter['single']['wins']} | "
-                        f"{Fore.LIGHTYELLOW_EX}Losses: {result_counter['single']['losses']} | "
-                        f"{Fore.LIGHTRED_EX}Draws: {result_counter['single']['draws']}")
+                    print()
+                    
+                    print(f"{random.choice(colours)}Computer - {Fore.LIGHTGREEN_EX}Wins: {result_counter_single['single']['wins']} | "
+                        f"{Fore.LIGHTYELLOW_EX}Losses: {result_counter_single['single']['losses']} | "
+                        f"{Fore.LIGHTRED_EX}Draws: {result_counter_single['single']['draws']}")
 
-                sleep(7)
-                print(Fore.LIGHTBLUE_EX + "Thanks for playing!")
+                sleep(5)
+                print(Fore.LIGHTBLUE_EX + "\n" + "Thanks for playing!")
                 sys.exit()
                 
             else:
@@ -446,12 +449,22 @@ def game_loop(board, win_conditions, mode, difficulty):     # This is the heart 
 
 
 
-def main():        
+def main():
+    global played_single, played_multi
+            
     welcome_screen()      
     board = initialise_board()
     display_board(board)
     
     mode, difficulty = game_mode()
+    
+    #This is for checking if user has played single and/or multiplayer mode
+    if mode == "single":
+        played_single = True      
+    elif mode == "multi":
+        played_multi = True
+    
+    #This is for checking difficulty
     if mode == "single":
         pass   #pass, because "difficulty = choose_difficulty()" was done before
     else:
@@ -459,6 +472,8 @@ def main():
         
     win_conditions = winning_conditions()
     game_loop(board, win_conditions, mode, difficulty)
+    
+    handle_play_again(mode, result_counter_single, result_counter_multi)
  
  
 
