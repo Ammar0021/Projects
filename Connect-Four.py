@@ -265,20 +265,43 @@ def computer_asian(board, computer, player):
         return False
 
     def check_immediate_threat(board, player):
-        # Simulate each possible move and see if the player can win
+    # Check for horizontal, vertical, and diagonal threats
         for col in range(7):
             if board[col][0] == ' ':  # Column is not full
                 for row in reversed(range(6)):
                     if board[col][row] == ' ':
                         # Simulate player's move
                         board[col][row] = player
-                        # Check if this move leads to a win
-                        if check_win(board, winning_conditions(), player) or check_diagonal_win(board, player):
+                        
+                        # Check horizontal threat (2 discs, potential 3-in-a-row)
+                        if col <= 5 and board[col+1][row] == player and board[col+2][row] == player:  # Check right side for block
                             board[col][row] = ' '  # Undo simulation
-                            return col  # Return the column where the threat exists
+                            return col
+                        if col >= 2 and board[col-1][row] == player and board[col-2][row] == player:  # Check left side for block
+                            board[col][row] = ' '  # Undo simulation
+                            return col
+                        if col >= 1 and col <= 5 and board[col-1][row] == player and board[col+1][row] == player:  # Check between two discs
+                            board[col][row] = ' '  # Undo simulation
+                            return col
+
+                        # Check vertical threat
+                        if row <= 2 and all(board[col][row + i] == player for i in range(1, 4)):
+                            board[col][row] = ' '  # Undo simulation
+                            return col
+                        
+                        # Check diagonal threats (bottom-left to top-right)
+                        if col <= 3 and row <= 2 and all(board[col + i][row + i] == player for i in range(1, 4)):
+                            board[col][row] = ' '  # Undo simulation
+                            return col
+                        # Check diagonal threats (bottom-right to top-left)
+                        if col >= 3 and row <= 2 and all(board[col - i][row + i] == player for i in range(1, 4)):
+                            board[col][row] = ' '  # Undo simulation
+                            return col
+
                         board[col][row] = ' '  # Undo simulation
                         break
         return None  # No immediate threat found
+
 
     # Step 1: Check for immediate player threats and block them
     threat_col = check_immediate_threat(board, player)
@@ -609,5 +632,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
