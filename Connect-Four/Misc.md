@@ -1,5 +1,5 @@
 
-'''Reminders:
+__Reminders:__
 
 - ~~Define game board (6 Rows, 7 Columns)~~
 - ~~42 total discs (7x7)~~
@@ -11,27 +11,25 @@
 - ~~Update other function arguments~~
 - ~~Update main()~~
 - ~~Add score counter (learn lambda)~~
-- Add only 1 "Draws" for multiplayer'''
+- Add only 1 "Draws" for multiplayer
 
-'''Issues:
+__Issues:__
 
-- Losses Counter not updating
-- Index out of range error (idk why ffs)'''
+- <span style="color: red;">Losses Counter not Updating</span>
+- Index out of range error (idk why ffs)
 
-'''Minimax:
+**Minimax:**
 
 - Scrap def computer_asian()
 - revamp def computer hard mode
 - Sort out Max Depth 
 - Add priority for Centre
-- Check for 2,3 in a row'''
+- Check for 2,3 in a row
 
-'''GUI (Pygame):
+__GUI (Pygame):__
 
-lol'''
+lol
 
-
-lol'''
 
 
 
