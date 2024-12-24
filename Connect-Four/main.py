@@ -1,3 +1,4 @@
+from MinimaxAlphaBeta import *
 import colorama
 import os
 import sys
@@ -10,7 +11,7 @@ from collections import deque, defaultdict
 
 colorama.init(autoreset=True)
 
-colours = [Fore.BLUE, Fore.LIGHTBLUE_EX, Fore.CYAN, Fore.LIGHTCYAN_EX, Fore.MAGENTA, Fore.LIGHTMAGENTA_EX,Fore.LIGHTYELLOW_EX, Fore.YELLOW]
+random_colour = [Fore.BLUE, Fore.LIGHTBLUE_EX, Fore.CYAN, Fore.LIGHTCYAN_EX, Fore.MAGENTA, Fore.LIGHTMAGENTA_EX,Fore.LIGHTYELLOW_EX, Fore.YELLOW]
 
 result_counter_single = defaultdict(lambda: defaultdict(int, {'wins': 0, 'losses': 0, 'draws': 0}))
 result_counter_multi = defaultdict(lambda: defaultdict(int, {'wins': 0, 'draws': 0}))
@@ -24,10 +25,11 @@ YELLOW_DISC = Fore.YELLOW + "O"
 
 # this is for compatibility
 def clear_screen():  
-    
-    if sys.platform == 'darwin' or sys.platform == 'linux':  # MacOS or Linux
+    if sys.platform.startswith('darwin'): #MacOS
+        os.system('clear')
+    elif sys.platform.startswith('linux'): #Linux
         os.system('clear')  
-    elif sys.platform == 'win32':  # Windows
+    elif sys.platform.startswith('win32'): #Windows
         os.system('cls') 
 
 def welcome_screen():
@@ -121,7 +123,7 @@ def player_move(board, player):
         try:
             print()
             sleep(0.3)
-            col = int(input(random.choice(colours) + Style.BRIGHT + "Choose a Column (1-7): " + Style.RESET_ALL).strip()) - 1  # -1 due to 0 indexing
+            col = int(input(random.choice(random_colour) + Style.BRIGHT + "Choose a Column (1-7): " + Style.RESET_ALL).strip()) - 1  # -1 due to 0 indexing
             if col < 0 or col > 6:
                 raise ValueError(Fore.LIGHTRED_EX + "Invalid Choice!, Please choose between 1 and 7, only")
 
@@ -380,7 +382,7 @@ def choose_difficulty():
                 return 'asian'
             
             else:
-                raise ValueError(Fore.LIGHTRED_EX + "Invalid Choice! Please enter 1,2 or 3 only.")
+                raise ValueError(Fore.LIGHTRED_EX + "Invalid Choice! Please enter 1,2,3 or 4 only.")
         except ValueError as error:
             print(error)
             
@@ -457,7 +459,7 @@ def game_loop(board, win_conditions, mode, difficulty):     # This is the heart 
         turn_counter['turn'] += 1
         
         # Display the current turn
-        print(random.choice(colours) + Style.BRIGHT + f"Turn {turn_counter['turn']}")
+        print(random.choice(random_colour) + Style.BRIGHT + f"Turn {turn_counter['turn']}")
         print()
 
         if mode == "multi":
@@ -556,20 +558,20 @@ def handle_play_again(mode, result_counter_single, result_counter_multi):
                 print("\n" + Style.BRIGHT +Fore.LIGHTRED_EX + "Game " + Fore.LIGHTYELLOW_EX + "Results:\n")
                 
                 if played_multi:
-                    print(f"{random.choice(colours)}Player 1 - {Fore.LIGHTGREEN_EX}Wins: {result_counter_multi['player1']['wins']} | "
+                    print(f"{random.choice(random_colour)}Player 1 - {Fore.LIGHTGREEN_EX}Wins: {result_counter_multi['player1']['wins']} | "
                         f"{Fore.LIGHTYELLOW_EX}Draws: {result_counter_multi['player1']['draws']}")
                     
-                    print(f"{random.choice(colours)}Player 2 - {Fore.LIGHTGREEN_EX}Wins: {result_counter_multi['player2']['wins']} | "
+                    print(f"{random.choice(random_colour)}Player 2 - {Fore.LIGHTGREEN_EX}Wins: {result_counter_multi['player2']['wins']} | "
                         f"{Fore.LIGHTYELLOW_EX}Draws: {result_counter_multi['player2']['draws']}")
             
                 if played_single:
-                    print(f"{random.choice(colours)}You - {Fore.LIGHTGREEN_EX}Wins: {result_counter_single['single']['wins']} | "
+                    print(f"{random.choice(random_colour)}You - {Fore.LIGHTGREEN_EX}Wins: {result_counter_single['single']['wins']} | "
                         f"{Fore.LIGHTYELLOW_EX}Losses: {result_counter_single['single']['losses']} | "
                         f"{Fore.LIGHTRED_EX}Draws: {result_counter_single['single']['draws']}")
                     
                     print()
                     
-                    print(f"{random.choice(colours)}Computer - {Fore.LIGHTGREEN_EX}Wins: {result_counter_single['single']['wins']} | "
+                    print(f"{random.choice(random_colour)}Computer - {Fore.LIGHTGREEN_EX}Wins: {result_counter_single['single']['wins']} | "
                         f"{Fore.LIGHTYELLOW_EX}Losses: {result_counter_single['single']['losses']} | "
                         f"{Fore.LIGHTRED_EX}Draws: {result_counter_single['single']['draws']}")
 
@@ -617,6 +619,22 @@ if __name__ == "__main__":
 
 
  
+
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
 
     
 
