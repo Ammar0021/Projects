@@ -40,7 +40,7 @@ def MinimaxAlphaBeta(board, depth, alpha, beta, MaximisingPlayer, player, comput
                         - depth-1 makes algorithm reduce the depth each recursive call, allows to explore deeper
                         - alpha is best value that maximiser (computer) can currently guarantee
                         - beta is current best value that minimiser can guarantee
-                        - False means is the minimsing player's turn (it flips each recursive call)
+                        - False means its the minimsing player's turn (it flips each recursive call)
                         '''
                         
                         board[col][row] = ' '
