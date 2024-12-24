@@ -15,7 +15,7 @@ __Reminders:__
 
 __Issues:__
 
-- <span style="color: red;">Losses Counter not Updating</span>
+- <span style="color:red;">Losses Counter not Updating</span>
 - Index out of range error (idk why ffs)
 
 **Minimax:**
