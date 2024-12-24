@@ -23,9 +23,10 @@
 - Scrap def computer_asian()
 - revamp def computer hard mode
 - Add priority for Centre
-- Check for 2,3 in a row
+- Check for 2,3 in a row'''
 
-'''GUI (Pygame)
+'''GUI (Pygame):
 
 lol'''
+
 
