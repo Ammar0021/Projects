@@ -22,7 +22,7 @@ __Issues:__
 
 - Scrap def computer_asian()
 - revamp def computer hard mode
-- Sort out Max Depth 
+- Sort out Max Depth and Bonus Score
 - ~~Add priority for Centre~~
 - ~~Check for 2,3 in a row~~
 
