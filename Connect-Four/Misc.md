@@ -23,8 +23,8 @@ __Issues:__
 - Scrap def computer_asian()
 - revamp def computer hard mode
 - Sort out Max Depth 
-- Add priority for Centre
-- Check for 2,3 in a row
+- ~~Add priority for Centre~~
+- ~~Check for 2,3 in a row~~
 
 __GUI (Pygame):__
 
