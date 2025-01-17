@@ -2,5 +2,5 @@
 
 Upcoming projects:
 
-- [ ] Connect Four
+- [ ] Currency Converter
 
